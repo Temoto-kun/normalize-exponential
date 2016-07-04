@@ -1,0 +1,35 @@
+{
+  "name": "@theoryofnekomata/normalize-exponential",
+  "version": "0.0.0",
+  "description": "Normalizes exponential format in float-parseable strings.",
+  "main": "src/normalize-exponential.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Temoto-kun/normalize-exponential.git"
+  },
+  "keywords": [
+    "normalization",
+    "string",
+    "format",
+    "exponent",
+    "math"
+  ],
+  "author": "Temoto-kun <kiiroifuriku@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Temoto-kun/normalize-exponential/issues"
+  },
+  "homepage": "https://github.com/Temoto-kun/normalize-exponential#readme",
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "jasmine-spec-reporter": "^2.5.0"
+  },
+  "scripts": {
+    "test": "eslint --env jasmine,node spec/**/*.js && node test.js",
+    "lint": "eslint --env es6,node src/**/*.js"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": "@theoryofnekomata/eslint-config-q3-2016"
+  }
+}
