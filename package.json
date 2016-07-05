@@ -1,6 +1,6 @@
 {
   "name": "@theoryofnekomata/normalize-exponential",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Normalizes exponential format in float-parseable strings.",
   "main": "src/normalize-exponential.js",
   "repository": {
