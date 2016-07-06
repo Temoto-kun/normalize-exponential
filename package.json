@@ -2,7 +2,7 @@
   "name": "@theoryofnekomata/normalize-exponential",
   "version": "1.0.0",
   "description": "Normalizes exponential format in float-parseable strings.",
-  "main": "src/normalize-exponential.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Temoto-kun/normalize-exponential.git"

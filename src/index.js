@@ -158,11 +158,13 @@
      */
     module.exports = function normalizeExponential(expStr) {
         var normExpStr = normalizeExpStr(expStr),
-            shiftNumPlaces = getShiftNumPlaces(normExpStr),
-            basePart = getBasePart(normExpStr),
-            expPart = getExpPart(normExpStr);
+            isNegative = normExpStr.indexOf('-') === 0,
+            absoluteExpStr = normExpStr.slice(isNegative ? 1 : 0),
+            shiftNumPlaces = getShiftNumPlaces(absoluteExpStr),
+            basePart = getBasePart(absoluteExpStr),
+            expPart = getExpPart(absoluteExpStr);
 
-        return shiftBaseDecimalPoint(basePart, shiftNumPlaces) + shiftExponent(expPart, -shiftNumPlaces);
+        return (isNegative ? '-' : '') + shiftBaseDecimalPoint(basePart, shiftNumPlaces) + shiftExponent(expPart, -shiftNumPlaces);
     };
     
 })();
