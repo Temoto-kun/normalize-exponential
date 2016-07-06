@@ -54,6 +54,10 @@
         var decPointIdx = expStr.indexOf('.'),
             expIndex;
 
+        if (decPointIdx < 0) {
+            expStr += '.0';
+        }
+
         expStr = expStr.trim().toLowerCase();
         expIndex = expStr.indexOf('e')
 
