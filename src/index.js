@@ -14,7 +14,17 @@
      * @returns {String} A number string with leading and trailing zeroes removed.
      */
     function trimZeroes(numStr) {
-        return numStr.replace(/^0+|0+$/g, '');
+        numStr = numStr.replace(/^(-)?0+|0+$/g, '$1');
+
+        if (numStr[numStr.length - 1] === '.') {
+            numStr += '0';
+        }
+
+        if (numStr[0] === '.') {
+            numStr = '0' + numStr;
+        }
+
+        return numStr;
     }
 
     /**
@@ -48,6 +58,7 @@
         expIndex = expStr.indexOf('e')
 
         if (expIndex < 0) {
+            expStr = trimZeroes(expStr);
             expStr += 'e+0';
             expIndex = expStr.indexOf('e');
         }
@@ -73,25 +84,11 @@
     function shiftBaseDecimalPoint(fBasePart, numPlaces) {
         var decPointIdx = fBasePart.indexOf('.'),
             decimalPointIdx = decPointIdx < 0 ? fBasePart.length : decPointIdx,
-            newDecimalPointIdx = decimalPointIdx + numPlaces,
-            shifted;
+            newDecimalPointIdx = decimalPointIdx + numPlaces;
 
         fBasePart = fBasePart.replace(/\./, '');
 
-        // 00002.35000 => 2.35
-        shifted = trimZeroes(fBasePart.slice(0, newDecimalPointIdx) + '.' + fBasePart.slice(newDecimalPointIdx));
-
-        // 5. => 5.0
-        if (shifted[shifted.length - 1] === '.') {
-            shifted += '0';
-        }
-
-        // .3453 => 0.3453
-        if (shifted[0] === '.') {
-            shifted = '0' + shifted;
-        }
-
-        return shifted;
+        return trimZeroes(fBasePart.slice(0, newDecimalPointIdx) + '.' + fBasePart.slice(newDecimalPointIdx));
     }
 
     /**
