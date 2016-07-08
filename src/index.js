@@ -8,19 +8,31 @@
 
 (function () {
 
+    var config;
+
+    /**
+     * Gets the decimal point symbol.
+     * @returns {String} The decimal point symbol.
+     */
+    function getDecimalPoint() {
+        return config.decimalPoint;
+    }
+
     /**
      * Trims superfluous zeroes.
      * @param {String} numStr A number string.
      * @returns {String} A number string with leading and trailing zeroes removed.
      */
     function trimZeroes(numStr) {
+        var decPoint = getDecimalPoint();
+
         numStr = numStr.replace(/^(-)?0+|0+$/g, '$1');
 
-        if (numStr[numStr.length - 1] === '.') {
+        if (numStr[numStr.length - 1] === decPoint) {
             numStr += '0';
         }
 
-        if (numStr[0] === '.') {
+        if (numStr[0] === decPoint) {
             numStr = '0' + numStr;
         }
 
@@ -51,17 +63,17 @@
      * @returns {String} The base part of the floating point string.
      */
     function normalizeExpStr(expStr) {
-        var decPointIdx, expIndex;
+        var decPointIdx, expIndex, decPoint = getDecimalPoint();
 
         expStr = expStr.trim().toLowerCase();
-        decPointIdx = expStr.indexOf('.');
+        decPointIdx = expStr.indexOf(decPoint);
         expIndex = expStr.indexOf('e');        
 
         if (decPointIdx < 0) {
             if (expIndex < 0) {
-                return expStr + '.0e+0';
+                return expStr + decPoint + '0e+0';
             }
-            expStr = expStr.slice(0, expIndex) + '.0' + expStr.slice(expIndex);
+            expStr = expStr.slice(0, expIndex) + decPoint + '0' + expStr.slice(expIndex);
             expIndex = expStr.indexOf('e');
         }
 
@@ -90,13 +102,14 @@
      * @returns {String} The floating point string with the shifted decimal point.
      */
     function shiftBaseDecimalPoint(fBasePart, numPlaces) {
-        var decPointIdx = fBasePart.indexOf('.'),
-            decimalPointIdx = decPointIdx < 0 ? fBasePart.length : decPointIdx,
-            newDecimalPointIdx = decimalPointIdx + numPlaces;
+        var decPoint = getDecimalPoint();
+            decPointIdx = fBasePart.indexOf(decPoint),
+            phantomDecPointIdx = decPointIdx < 0 ? fBasePart.length : decPointIdx,
+            newDecimalPointIdx = phantomDecPointIdx + numPlaces;
 
-        fBasePart = fBasePart.replace(/\./, '');
+        fBasePart = fBasePart.slice(0, decPointIdx) + fBasePart.slice(decPointIdx + decPoint.length);
 
-        return trimZeroes(fBasePart.slice(0, newDecimalPointIdx) + '.' + fBasePart.slice(newDecimalPointIdx));
+        return trimZeroes(fBasePart.slice(0, newDecimalPointIdx) + decPoint + fBasePart.slice(newDecimalPointIdx));
     }
 
     /**
@@ -123,18 +136,19 @@
      */
     function getShiftNumPlaces(fStr) {
         var i,
+            decPoint = getDecimalPoint(),
 
             // Right shift is when the base part is less than 1
-            isRightShift = fStr.search(/0\./) === 0,
+            isRightShift = fStr.indexOf('0' + decPoint) === 0,
             shiftNumPlaces = 0;
 
-        if (fStr.indexOf('.') < 0) {
+        if (fStr.indexOf(decPoint) < 0) {
             return -(getBasePart(fStr).length - 1);
         }
 
         for (i = 0; i < fStr.length; i++) {
             if (isRightShift && i > 0) {
-                if (fStr[i] === '.') {
+                if (fStr[i] === decPoint) {
                     continue;
                 }
 
@@ -146,7 +160,7 @@
                 continue;
             }
 
-            if (fStr[i] === '.') {
+            if (fStr[i] === decPoint) {
                 return shiftNumPlaces + 1;
             }
 
@@ -161,7 +175,7 @@
      * @param {String} expStr A number string.
      * @returns {String} A normalized number string.
      */
-    module.exports = function normalizeExponential(expStr) {
+    function normalizeExponential(expStr) {
         var normExpStr = normalizeExpStr('' + expStr),
             isNegative = normExpStr.indexOf('-') === 0,
             absoluteExpStr = normExpStr.slice(isNegative ? 1 : 0),
@@ -170,6 +184,16 @@
             expPart = getExpPart(absoluteExpStr);
 
         return (isNegative ? '-' : '') + shiftBaseDecimalPoint(basePart, shiftNumPlaces) + shiftExponent(expPart, -shiftNumPlaces);
+    }
+
+    /**
+     * Creates a custom normalizer with configuration.
+     * @param {Object} The configuration object.
+     * @returns {Function} The normalizer function.
+     */
+    module.exports = function customNormalizeExponential(theConfig) {
+        config = theConfig;
+        config.decimalPoint = config.decimalPoint || '.';
+        return normalizeExponential;
     };
-    
 })();
