@@ -62,19 +62,21 @@
                 return expStr + '.0e+0';
             }
             expStr = expStr.slice(0, expIndex) + '.0' + expStr.slice(expIndex);
+            expIndex = expStr.indexOf('e');
         }
 
         if (decPointIdx === 0) {
-            if (expIndex < 0) {
-                return '0' + expStr + 'e+0';
-            }
             expStr = '0' + expStr;
+        }
+
+        if (expIndex < 0) {
+            expStr += 'e+0';
         }
 
         expIndex = expStr.indexOf('e');
 
         // Add plus
-        if (expStr[expIndex + 1] !== '+' || expStr[expIndex + 1] !== '-') {
+        if (expStr[expIndex + 1] !== '+' && expStr[expIndex + 1] !== '-') {
             expStr = expStr.slice(0, expIndex + 1) + '+' + expStr.slice(expIndex + 1);
         }
 
@@ -160,7 +162,7 @@
      * @returns {String} A normalized number string.
      */
     module.exports = function normalizeExponential(expStr) {
-        var normExpStr = normalizeExpStr(expStr),
+        var normExpStr = normalizeExpStr('' + expStr),
             isNegative = normExpStr.indexOf('-') === 0,
             absoluteExpStr = normExpStr.slice(isNegative ? 1 : 0),
             shiftNumPlaces = getShiftNumPlaces(absoluteExpStr),
