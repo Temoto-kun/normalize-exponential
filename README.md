@@ -33,7 +33,7 @@ It enforces the output to be in lowercase (i.e. 'e' instead of 'E').
 
 Sure thing! Just clone the repo.
 
-`to-sass-value` uses [Jasmine](https://jasmine.github.io) for unit tests, and
+`normalize-exponential` uses [Jasmine](https://jasmine.github.io) for unit tests, and
 [ESLint](http://eslint.org) to make sure code is written consistently (and implied it will
 run consistently as well).
 
